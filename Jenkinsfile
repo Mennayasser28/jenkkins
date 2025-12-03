@@ -36,8 +36,9 @@ pipeline {
 
          stage('push Docker Image') {
             steps {
-                withCredentials([string(credentialsId: 'docker-password', variable: 'DOCKER-USERNAME'), string(credentialsId: 'docker-password', variable: 'DOCKER-PASSWORD')]) {
-                sh 'echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin '
+                withCredentials([string(credentialsId: 'docker-username', variable: 'DOCKER-USERNAME'), string(credentialsId: 'docker-password', variable: 'DOCKER-PASSWORD')]) {
+                sh 'docker login -u ${DOCKER-USERNAME} -p ${DOCKER-PASSWORD}'
+                sh'docker push mennayasser5/sysadmin-java:v1'
             }
                 sh'docker push mennayasser5/sysadmin-java:v1'
             }
