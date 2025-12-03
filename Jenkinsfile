@@ -1,3 +1,6 @@
+@Library('sysadminlib')_
+
+
 pipeline {
     agent {
         label 'java-agent-01'
@@ -24,24 +27,26 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                sh'docker build -t mennayasser5/sysadmin-java:v${BUILD_NUMBER} .'
+                script{
+                    def dockerClass = new edu.iti.docker()
+                    dockerClass.build("mennayasser5/sysadmin-java", "v${BUILD_NUMBER}")
+                }
             }
         }
 
 
-        //  stage('push Docker Image') {
-        //     steps {
-        //         withCredentials([string(credentialsId: 'docker-username', variable: 'DOCKER-USERNAME'), string(credentialsId: 'docker-password', variable: 'DOCKER-PASSWORD')]) {
-        //         sh 'docker login -u ${DOCKER-USERNAME} -p ${DOCKER-PASSWORD}'
-        //     }
-        //         sh'docker push mennayasser5/sysadmin-java:v${BUILD_NUMBER}'
-        //     }
-        // }
-
-        stage('Deploy App') {
+         stage('push Docker Image') {
             steps {
-                sh "docker run -d -p 8090:8090 --name java mennayasser5/sysadmin-java:v${BUILD_NUMBER}"
+                script{
+                    def dockerClass = new edu.iti.docker()
+                    withCredentials([string(credentialsId: 'docker-username', variable: 'DOCKER-USERNAME'), string(credentialsId: 'docker-password', variable: 'DOCKER-PASSWORD')]) {
+                        dockerClass.login("${DOCKER-USERNAME}", "${DOCKER-PASSWORD}")
+                    }
+                    dockerClass.push("mennayasser5/sysadmin-java", "v${BUILD_NUMBER}")
+                }
             }
         }
+
+        
     }
 }
