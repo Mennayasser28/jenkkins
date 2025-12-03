@@ -39,7 +39,7 @@ pipeline {
             steps {
                 script{
                     def dockerClass = new edu.iti.docker()
-                    withCredentials([string(credentialsId: 'docker-username', variable: 'DOCKER_USERNAME'), string(credentialsId: 'docker-username', variable: 'DOCKER_PASSWORD')]) {
+                    withCredentials([string(credentialsId: 'docker-username', variable: 'DOCKER_USERNAME'), string(credentialsId: 'docker-password', variable: 'DOCKER_PASSWORD')]) {
                         dockerClass.login("${DOCKER_USERNAME}", "${DOCKER_PASSWORD}")
                     }
                     dockerClass.push("mennayasser5/sysadmin-java", "v${BUILD_NUMBER}")
